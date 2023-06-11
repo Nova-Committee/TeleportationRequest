@@ -1,5 +1,6 @@
 package committee.nova.tprequest.command.init;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.brigadier.CommandDispatcher;
 import committee.nova.tprequest.TeleportationRequest;
 import committee.nova.tprequest.api.ITeleportable;
@@ -15,7 +16,18 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
+import java.util.Map;
+
 public class CommandInit {
+    private static final Map<String, String> cmds = ImmutableMap.of(
+            "trtpa", "tpa",
+            "trtpahere", "tpahere",
+            "trtpaccept", "tpaccept",
+            "trtpcancel", "tpcancel",
+            "trtpdeny", "tpdeny",
+            "trtpignore", "tpignore"
+    );
+
     public static void init(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
         final var tpa = dispatcher.register(CommandManager.literal("trtpa").then(
                 CommandManager.argument("player", EntityArgumentType.player()).requires(p -> true).executes(ctx -> {
@@ -200,6 +212,25 @@ public class CommandInit {
                     return 1;
                 })
         ).requires(p -> true).executes(CommandImpl::ignore));
+        final boolean shortAlternatives = TeleportationRequest.shouldRegisterShortAlternatives();
+        dispatcher.register(CommandManager.literal("tprequest")
+                .then(CommandManager.literal("help").executes(ctx -> {
+                    final ServerCommandSource src = ctx.getSource();
+                    for (final var e : cmds.entrySet()) {
+                        final String key = "desc.tprequest." + e.getKey();
+                        src.sendFeedback(new TranslatableText(key, e.getKey()), false);
+                        if (shortAlternatives) src.sendFeedback(new TranslatableText(key, e.getValue()), false);
+                    }
+                    return 1;
+                }).requires(p -> true))
+                .then(CommandManager.literal("reload").executes(ctx -> {
+                    final boolean success = TeleportationRequest.reload();
+                    ctx.getSource().sendFeedback(new TranslatableText("msg.tprequest.reload." + (success ? "success" : "failure")
+                            .formatted(success ? Formatting.GREEN : Formatting.RED)), false);
+                    return success ? 1 : 0;
+                }).requires(p -> p.hasPermissionLevel(p.getServer().getOpPermissionLevel())))
+                .requires(p -> true));
+        if (!shortAlternatives) return;
         dispatcher.register(CommandManager.literal("tpa").redirect(tpa).requires(p -> true));
         dispatcher.register(CommandManager.literal("tpahere").redirect(tpahere).requires(p -> true));
         dispatcher.register(CommandManager.literal("tpcancel").redirect(tpcancel).executes(CommandImpl::cancel).requires(p -> true));

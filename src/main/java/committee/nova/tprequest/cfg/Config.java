@@ -49,7 +49,6 @@ public class Config {
     }
 
     public static class ConfigRequest {
-
         private final File file;
         private final String filename;
         private DefaultConfig provider;
@@ -234,6 +233,20 @@ public class Config {
      */
     public boolean isBroken() {
         return broken;
+    }
+
+    public boolean reload() {
+        final String identifier = "Config '" + request.filename + "'";
+        if (!broken) {
+            try {
+                loadConfig();
+            } catch (Exception e) {
+                LOGGER.error(identifier + " failed to load!");
+                LOGGER.trace(e);
+                broken = true;
+            }
+        }
+        return !broken;
     }
 
     /**

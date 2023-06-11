@@ -15,6 +15,7 @@ public class TeleportationRequest implements ModInitializer {
     private static Config cfg;
     private static int tpCd;
     private static int expirationTime;
+    private static boolean shortAlternatives;
 
     @Override
     public void onInitialize() {
@@ -32,10 +33,13 @@ public class TeleportationRequest implements ModInitializer {
                 tpCd=600
                 # Expiration time (tick) of a teleportation request
                 expirationTime=1200
+                # Set to true to register short alternatives of teleportation request commands, e.g. /trtpa -> /tpa
+                shortAlternatives=true
                 """
         ).request();
         tpCd = cfg.getOrDefault("tpCd", 600);
         expirationTime = cfg.getOrDefault("expirationTime", 1200);
+        shortAlternatives = cfg.getOrDefault("shortAlternatives", true);
     }
 
     public static int getTpCd() {
@@ -44,5 +48,15 @@ public class TeleportationRequest implements ModInitializer {
 
     public static int getExpirationTime() {
         return expirationTime;
+    }
+
+    public static boolean shouldRegisterShortAlternatives() {
+        return shortAlternatives;
+    }
+
+    public static boolean reload() {
+        final boolean r = cfg.reload();
+        syncCfg();
+        return r;
     }
 }
