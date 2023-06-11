@@ -4,8 +4,10 @@ import committee.nova.tprequest.TeleportationRequest;
 import committee.nova.tprequest.util.Utilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 import java.util.UUID;
 
@@ -26,7 +28,11 @@ public interface TeleportRequest {
 
     UUID getReceiver();
 
-    Text getSummary(MinecraftServer server);
+    MutableText getSummary(MinecraftServer server);
+
+    default MutableText getCmdSuggestion(MinecraftServer server) {
+        return getSummary(server).append(",").append(new LiteralText(getId().toString()));
+    }
 
     default boolean isRelevantTo(ServerPlayerEntity player) {
         final UUID uuid = player.getUuid();
@@ -91,9 +97,9 @@ public interface TeleportRequest {
         }
 
         @Override
-        public Text getSummary(MinecraftServer server) {
+        public MutableText getSummary(MinecraftServer server) {
             return new TranslatableText("format.tprequest.summary.to",
-                    Utilities.getPlayerName(server, sender), Utilities.getPlayerName(server, receiver));
+                    Utilities.getPlayerName(server, sender), Utilities.getPlayerName(server, receiver)).formatted(Formatting.WHITE);
         }
     }
 
@@ -155,7 +161,7 @@ public interface TeleportRequest {
         }
 
         @Override
-        public Text getSummary(MinecraftServer server) {
+        public MutableText getSummary(MinecraftServer server) {
             return new TranslatableText("format.tprequest.summary.here",
                     Utilities.getPlayerName(server, sender), Utilities.getPlayerName(server, receiver));
         }
