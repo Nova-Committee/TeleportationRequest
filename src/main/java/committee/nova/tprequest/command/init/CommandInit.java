@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import committee.nova.tprequest.TeleportationRequest;
 import committee.nova.tprequest.api.ITeleportable;
 import committee.nova.tprequest.command.argument.TeleportRequestArgument;
+import committee.nova.tprequest.command.impl.CommandImpl;
 import committee.nova.tprequest.request.TeleportRequest;
 import committee.nova.tprequest.storage.ServerStorage;
 import committee.nova.tprequest.util.Utilities;

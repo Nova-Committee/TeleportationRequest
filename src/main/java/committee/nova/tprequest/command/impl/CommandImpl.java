@@ -1,4 +1,4 @@
-package committee.nova.tprequest.command.init;
+package committee.nova.tprequest.command.impl;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.context.CommandContext;
