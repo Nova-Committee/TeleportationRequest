@@ -7,7 +7,9 @@
   "authors": [
     "Tapio"
   ],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/Nova-Committee/TeleportationRequest"
+  },
   "license": "AGPL-3.0",
   "environment": "*",
   "entrypoints": {
