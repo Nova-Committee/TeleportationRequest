@@ -11,10 +11,7 @@ import committee.nova.tprequest.util.Utilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -30,16 +27,19 @@ public class CommandImpl {
         final MinecraftServer server = src.getServer();
         for (final var r : l)
             if (r.getReceiver().equals(srcPlayer.getUuid())) {
-                if (request == null) request = r;
-                else {
+                if (request == null) {
+                    request = r;
+                    if (r.isIgnored()) shouldShow.add(r);
+                } else {
                     if (shouldShow.isEmpty()) shouldShow.add(request);
                     shouldShow.add(r);
                 }
             }
         if (!shouldShow.isEmpty()) {
-            src.sendFeedback(new TranslatableText("msg.tprequest.multi"), false);
-            shouldShow.forEach(t -> src.sendFeedback(t.getSummary(server).setStyle(Style.EMPTY
-                    .withColor(Formatting.YELLOW)
+            src.sendFeedback(new TranslatableText("msg.tprequest.following"), false);
+            shouldShow.forEach(t -> src.sendFeedback(t.getSummary(server).append(t.isIgnored() ?
+                    new TranslatableText("status.tprequest.ignored") : LiteralText.EMPTY).setStyle(Style.EMPTY
+                    .withColor(t.isIgnored() ? Formatting.GRAY : Formatting.YELLOW)
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpaccept " + t.getId().toString()))
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("selection.tprequest.accept.info",
                             t.getSummary(server))))), false));
@@ -73,16 +73,19 @@ public class CommandImpl {
         final MinecraftServer server = src.getServer();
         for (final var r : l)
             if (r.getReceiver().equals(srcPlayer.getUuid())) {
-                if (request == null) request = r;
-                else {
+                if (request == null) {
+                    request = r;
+                    if (r.isIgnored()) shouldShow.add(r);
+                } else {
                     if (shouldShow.isEmpty()) shouldShow.add(request);
                     shouldShow.add(r);
                 }
             }
         if (!shouldShow.isEmpty()) {
-            src.sendFeedback(new TranslatableText("msg.tprequest.multi"), false);
-            shouldShow.forEach(t -> src.sendFeedback(t.getSummary(server).setStyle(Style.EMPTY
-                    .withColor(Formatting.YELLOW)
+            src.sendFeedback(new TranslatableText("msg.tprequest.following"), false);
+            shouldShow.forEach(t -> src.sendFeedback(t.getSummary(server).append(t.isIgnored() ?
+                    new TranslatableText("status.tprequest.ignored") : LiteralText.EMPTY).setStyle(Style.EMPTY
+                    .withColor(t.isIgnored() ? Formatting.GRAY : Formatting.YELLOW)
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpdeny " + t.getId().toString()))
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("selection.tprequest.deny.info",
                             t.getSummary(server))))), false));
@@ -119,7 +122,7 @@ public class CommandImpl {
             }
         final MinecraftServer server = src.getServer();
         if (!shouldShow.isEmpty()) {
-            src.sendFeedback(new TranslatableText("msg.tprequest.multi"), false);
+            src.sendFeedback(new TranslatableText("msg.tprequest.following"), false);
             shouldShow.forEach(t -> src.sendFeedback(t.getSummary(server).setStyle(Style.EMPTY
                     .withColor(Formatting.YELLOW)
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpignore " + t.getId().toString()))
@@ -152,7 +155,7 @@ public class CommandImpl {
                 }
             }
         if (!shouldShow.isEmpty()) {
-            src.sendFeedback(new TranslatableText("msg.tprequest.multi"), false);
+            src.sendFeedback(new TranslatableText("msg.tprequest.following"), false);
             shouldShow.forEach(t -> src.sendFeedback(t.getSummary(server).setStyle(Style.EMPTY
                     .withColor(Formatting.YELLOW)
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpcancel " + t.getId().toString()))
