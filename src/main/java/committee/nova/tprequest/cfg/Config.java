@@ -165,7 +165,6 @@ public class Config {
      * @return value corresponding to the given key
      * @see Config#getOrDefault
      */
-    @Deprecated
     public String get(String key) {
         return config.get(key);
     }
