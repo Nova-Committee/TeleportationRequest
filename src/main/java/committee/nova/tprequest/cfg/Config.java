@@ -258,5 +258,4 @@ public class Config {
         LOGGER.warn("Config '" + request.filename + "' was removed from existence! Restart the game to regenerate it.");
         return request.file.delete();
     }
-
 }

@@ -10,12 +10,19 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.command.argument.ArgumentTypes;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.util.registry.Registry;
+
+import java.util.Optional;
 
 public class TeleportationRequest implements ModInitializer {
     private static Config cfg;
     private static int tpCd;
     private static int expirationTime;
     private static boolean shortAlternatives;
+    private static String notificationSound;
 
     @Override
     public void onInitialize() {
@@ -35,11 +42,14 @@ public class TeleportationRequest implements ModInitializer {
                 expirationTime=1200
                 # Set to true to register short alternatives of teleportation request commands, e.g. /trtpa -> /tpa
                 shortAlternatives=true
+                # Notification sound to be played after a teleportation. Leave a blank to disable.
+                notificationSound=minecraft:entity.enderman.teleport
                 """
         ).request();
         tpCd = cfg.getOrDefault("tpCd", 600);
         expirationTime = cfg.getOrDefault("expirationTime", 1200);
         shortAlternatives = cfg.getOrDefault("shortAlternatives", true);
+        notificationSound = cfg.getOrDefault("notificationSound", "minecraft:entity.enderman.teleport");
     }
 
     public static int getTpCd() {
@@ -52,6 +62,14 @@ public class TeleportationRequest implements ModInitializer {
 
     public static boolean shouldRegisterShortAlternatives() {
         return shortAlternatives;
+    }
+
+    public static Optional<SoundEvent> getNotificationSound() {
+        try {
+            return Optional.ofNullable(Registry.SOUND_EVENT.get(new Identifier(notificationSound)));
+        } catch (InvalidIdentifierException ignored) {
+            return Optional.empty();
+        }
     }
 
     public static boolean reload() {
