@@ -60,7 +60,7 @@ public class CommandImpl {
             ServerStorage.requests.remove(request);
             return 1;
         }
-        src.sendError(new TranslatableText("msg.tprequest.notfound"));
+        src.sendError(new TranslatableText("msg.tprequest.notfound", ""));
         return 0;
     }
 
@@ -102,7 +102,7 @@ public class CommandImpl {
             src.sendFeedback(new TranslatableText("msg.tprequest.denied", request.getSummary(server)).formatted(Formatting.YELLOW), false);
             return 1;
         }
-        src.sendError(new TranslatableText("msg.tprequest.notfound"));
+        src.sendError(new TranslatableText("msg.tprequest.notfound", ""));
         return 0;
     }
 
@@ -131,7 +131,7 @@ public class CommandImpl {
             return 1;
         }
         if (request == null) {
-            src.sendError(new TranslatableText("msg.tprequest.notfound"));
+            src.sendError(new TranslatableText("msg.tprequest.notfound", ""));
             return 0;
         }
         request.setIgnored(true);
@@ -174,7 +174,7 @@ public class CommandImpl {
             src.sendFeedback(new TranslatableText("msg.tprequest.cancelled", request.getSummary(server)).formatted(Formatting.YELLOW), false);
             return 1;
         }
-        src.sendError(new TranslatableText("msg.tprequest.notfound"));
+        src.sendError(new TranslatableText("msg.tprequest.notfound", ""));
         return 0;
     }
 }
