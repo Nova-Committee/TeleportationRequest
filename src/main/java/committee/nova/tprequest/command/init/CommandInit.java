@@ -142,7 +142,7 @@ public class CommandInit {
                     final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
                     final ServerPlayerEntity srcPlayer = src.getPlayer();
                     if (!request.getSender().equals(srcPlayer.getUuid())) {
-                        src.sendError(Text.translatable("msg.tprequest.notfound"));
+                        src.sendError(Text.translatable("msg.tprequest.notfound", ""));
                         return 0;
                     }
                     if (!ServerStorage.requests.remove(request)) {
@@ -164,7 +164,7 @@ public class CommandInit {
                     final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
                     final ServerPlayerEntity srcPlayer = src.getPlayer();
                     if (!request.getReceiver().equals(srcPlayer.getUuid())) {
-                        src.sendError(Text.translatable("msg.tprequest.notfound"));
+                        src.sendError(Text.translatable("msg.tprequest.notfound", ""));
                         return 0;
                     }
                     final MinecraftServer server = src.getServer();
@@ -188,7 +188,7 @@ public class CommandInit {
                     final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
                     final ServerPlayerEntity srcPlayer = src.getPlayer();
                     if (!request.getReceiver().equals(srcPlayer.getUuid())) {
-                        src.sendError(Text.translatable("msg.tprequest.notfound"));
+                        src.sendError(Text.translatable("msg.tprequest.notfound", ""));
                         return 0;
                     }
                     if (!ServerStorage.requests.remove(request)) {
@@ -208,7 +208,7 @@ public class CommandInit {
                     final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
                     final ServerPlayerEntity srcPlayer = src.getPlayer();
                     if (!request.getReceiver().equals(srcPlayer.getUuid())) {
-                        src.sendError(Text.translatable("msg.tprequest.notfound"));
+                        src.sendError(Text.translatable("msg.tprequest.notfound", ""));
                         return 0;
                     }
                     request.setIgnored(true);

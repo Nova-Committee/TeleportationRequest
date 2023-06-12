@@ -18,7 +18,7 @@
   "msg.tprequest.info.to": "%s wanted to teleport to you",
   "msg.tprequest.invalid_uuid": "Illegal UUID format!",
   "msg.tprequest.following": "The following request(s) were found:",
-  "msg.tprequest.notfound": "No matching request %s found...",
+  "msg.tprequest.notfound": "No matching request %s",
   "msg.tprequest.not_present": "Cannot get request sender or receiver...",
   "msg.tprequest.reload.success": "Teleportation Request configuration successfully reloaded!",
   "msg.tprequest.reload.failure": "Failed to reload Teleportation Request configuration! Please check the configuration file.",
