@@ -1,6 +1,7 @@
 package committee.nova.tprequest.request;
 
 import committee.nova.tprequest.TeleportationRequest;
+import committee.nova.tprequest.callback.TeleportationCallback;
 import committee.nova.tprequest.util.Utilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -28,6 +29,8 @@ public interface TeleportRequest {
     UUID getSender();
 
     UUID getReceiver();
+
+    TeleportationType getType();
 
     MutableText getSummary(MinecraftServer server);
 
@@ -69,6 +72,7 @@ public interface TeleportRequest {
             final ServerPlayerEntity oR = server.getPlayerManager().getPlayer(receiver);
             if (oS == null || oR == null) return false;
             oS.teleport(oR.getWorld(), oR.getX(), oR.getY(), oR.getZ(), oR.getYaw(), oR.getPitch());
+            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
             TeleportationRequest.getNotificationSound().ifPresent(r -> oS.playSound(r, SoundCategory.PLAYERS, 1.0F, 1.0F));
             return true;
         }
@@ -96,6 +100,11 @@ public interface TeleportRequest {
         @Override
         public UUID getReceiver() {
             return receiver;
+        }
+
+        @Override
+        public TeleportationType getType() {
+            return TeleportationType.TO;
         }
 
         @Override
@@ -134,6 +143,7 @@ public interface TeleportRequest {
             final ServerPlayerEntity oR = server.getPlayerManager().getPlayer(receiver);
             if (oS == null || oR == null) return false;
             oR.teleport(oS.getWorld(), oS.getX(), oS.getY(), oS.getZ(), oS.getYaw(), oS.getPitch());
+            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
             TeleportationRequest.getNotificationSound().ifPresent(r -> oS.playSound(r, SoundCategory.PLAYERS, 1.0F, 1.0F));
             return true;
         }
@@ -164,9 +174,19 @@ public interface TeleportRequest {
         }
 
         @Override
+        public TeleportationType getType() {
+            return TeleportationType.HERE;
+        }
+
+        @Override
         public MutableText getSummary(MinecraftServer server) {
             return new TranslatableText("format.tprequest.summary.here",
                     Utilities.getPlayerName(server, sender), Utilities.getPlayerName(server, receiver));
         }
+    }
+
+    enum TeleportationType {
+        TO,
+        HERE;
     }
 }
