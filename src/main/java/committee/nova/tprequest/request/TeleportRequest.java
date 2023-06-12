@@ -5,7 +5,6 @@ import committee.nova.tprequest.callback.TeleportationCallback;
 import committee.nova.tprequest.util.Utilities;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
@@ -73,7 +72,6 @@ public interface TeleportRequest {
             if (oS == null || oR == null) return false;
             oS.teleport(oR.getWorld(), oR.getX(), oR.getY(), oR.getZ(), oR.getYaw(), oR.getPitch());
             TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
-            TeleportationRequest.getNotificationSound().ifPresent(r -> oS.playSound(r, SoundCategory.PLAYERS, 1.0F, 1.0F));
             return true;
         }
 
@@ -144,7 +142,6 @@ public interface TeleportRequest {
             if (oS == null || oR == null) return false;
             oR.teleport(oS.getWorld(), oS.getX(), oS.getY(), oS.getZ(), oS.getYaw(), oS.getPitch());
             TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
-            TeleportationRequest.getNotificationSound().ifPresent(r -> oS.playSound(r, SoundCategory.PLAYERS, 1.0F, 1.0F));
             return true;
         }
 
