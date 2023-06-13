@@ -192,7 +192,7 @@ tasks.withType(JavaCompile).configureEach {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'tprequest-1.19.4'
+            artifactId = 'tprequest-1.19.4-1.20'
             from components.java
         }
     }
