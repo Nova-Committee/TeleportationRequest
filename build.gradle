@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'maven-publish'
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -19,7 +20,7 @@ group = 'committee.nova.tprequest.forge'
 version = '1.0.0'
 
 java {
-    archivesBaseName = 'tprequest'
+    archivesBaseName = 'TeleportationRequest-Forge-1.18.2'
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
@@ -186,4 +187,25 @@ jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'tprequest-1.18.2'
+            from components.java
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        maven {
+            name = "release"
+            url = 'https://maven.nova-committee.cn/releases'
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
 }
