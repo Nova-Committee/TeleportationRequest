@@ -7,9 +7,11 @@ import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.network.NetworkConstants;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
@@ -41,6 +43,8 @@ public class TeleportationRequest {
     public TeleportationRequest() {
         ArgumentTypes.register("teleport_request", TeleportRequestArgument.class, new EmptyArgumentSerializer<>(TeleportRequestArgument::instance));
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CFG);
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
+                () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
 
     public static int getTpCd() {
