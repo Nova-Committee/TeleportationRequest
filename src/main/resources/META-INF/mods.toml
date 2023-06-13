@@ -1,0 +1,11 @@
+modLoader = "javafml"
+loaderVersion = "[38,)"
+license = "GNU AGPL 3.0"
+[[mods]]
+modId = "tprequest"
+version = "${file.jarVersion}"
+displayName = "TeleportationRequest"
+authors = "Tapio"
+description = '''
+Allows players to teleport to each other
+'''
