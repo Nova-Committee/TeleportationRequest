@@ -29,7 +29,7 @@ public class TeleportationRequest {
         tpCd = builder.comment("Cool-down time (tick) after a successful teleportation request")
                 .defineInRange("tpCd", 600, 0, Integer.MAX_VALUE);
         expirationTime = builder.comment("Expiration time (tick) of a teleportation request")
-                .defineInRange("expirationTime", 1200, 600, Integer.MAX_VALUE);
+                .defineInRange("expirationTime", 1200, 0, Integer.MAX_VALUE);
         shortAlternatives = builder.comment("Set to true to register short alternatives of teleportation request commands, e.g. /trtpa -> /tpa")
                 .define("shortAlternatives", true);
         notificationSound = builder.comment("Notification sound to be played after a teleportation. Leave a blank to disable")
