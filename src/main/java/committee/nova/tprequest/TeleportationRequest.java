@@ -1,10 +1,12 @@
 package committee.nova.tprequest;
 
 import committee.nova.tprequest.callback.TeleportationCallback;
-import committee.nova.tprequest.cfg.Config;
+import committee.nova.tprequest.cfg.TprConfig;
 import committee.nova.tprequest.command.argument.TeleportRequestArgument;
 import committee.nova.tprequest.command.init.CommandInit;
 import committee.nova.tprequest.storage.ServerStorage;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.YamlConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -17,18 +19,18 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class TeleportationRequest implements ModInitializer {
-    private static Config cfg;
-    private static int tpCd;
-    private static int expirationTime;
-    private static boolean shortAlternatives;
-    private static String notificationSound;
+    public static final String MODID = "tprequest";
+    private static TprConfig cfg;
 
     @Override
     public void onInitialize() {
-        syncCfg();
+        AutoConfig.register(TprConfig.class, YamlConfigSerializer::new);
+        cfg = AutoConfig.getConfigHolder(TprConfig.class).getConfig();
         ArgumentTypes.register("teleport_request", TeleportRequestArgument.class, new ConstantArgumentSerializer<>(TeleportRequestArgument::instance));
         ServerTickEvents.END_SERVER_TICK.register(ServerStorage::tick);
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> ServerStorage.requests.clear());
@@ -37,48 +39,31 @@ public class TeleportationRequest implements ModInitializer {
                 .ifPresent(r -> sender.playSound(r, SoundCategory.PLAYERS, 1.0F, 1.0F))));
     }
 
-    public static void syncCfg() {
-        if (cfg == null) cfg = Config.of("TeleportationRequest-Config").provider(path -> """
-                # TeleportationRequest-Config
-                # Cool-down time (tick) after a successful teleportation request
-                tpCd=600
-                # Expiration time (tick) of a teleportation request
-                expirationTime=1200
-                # Set to true to register short alternatives of teleportation request commands, e.g. /trtpa -> /tpa
-                shortAlternatives=true
-                # Notification sound to be played after a teleportation. Leave a blank to disable.
-                notificationSound=minecraft:entity.enderman.teleport
-                """
-        ).request();
-        tpCd = cfg.getOrDefault("tpCd", 600);
-        expirationTime = cfg.getOrDefault("expirationTime", 1200);
-        shortAlternatives = cfg.getOrDefault("shortAlternatives", true);
-        notificationSound = cfg.getOrDefault("notificationSound", "minecraft:entity.enderman.teleport");
-    }
-
     public static int getTpCd() {
-        return tpCd;
+        return cfg.tpCd;
     }
 
     public static int getExpirationTime() {
-        return expirationTime;
+        return cfg.expirationTime;
     }
 
-    public static boolean shouldRegisterShortAlternatives() {
-        return shortAlternatives;
+    public static List<String> getAlternativesFor(String cmd) {
+        return switch (cmd) {
+            case "trtpa" -> cfg.saTpa;
+            case "trtpahere" -> cfg.saTpahere;
+            case "trtpaccept" -> cfg.saTpaccept;
+            case "trtpcancel" -> cfg.saTpcancel;
+            case "trtpdeny" -> cfg.saTpdeny;
+            case "trtpignore" -> cfg.saTpignore;
+            default -> Collections.emptyList();
+        };
     }
 
     public static Optional<SoundEvent> getNotificationSound() {
         try {
-            return Optional.ofNullable(Registry.SOUND_EVENT.get(new Identifier(notificationSound)));
+            return Optional.ofNullable(Registry.SOUND_EVENT.get(new Identifier(cfg.notificationSound)));
         } catch (InvalidIdentifierException ignored) {
             return Optional.empty();
         }
-    }
-
-    public static boolean reload() {
-        final boolean r = cfg.reload();
-        syncCfg();
-        return r;
     }
 }
