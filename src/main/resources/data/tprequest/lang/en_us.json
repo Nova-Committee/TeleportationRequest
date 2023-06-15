@@ -22,7 +22,7 @@
   "msg.tprequest.notfound": "No matching request %s",
   "msg.tprequest.not_present": "Cannot get request sender or receiver...",
   "msg.tprequest.reload.success": "Teleportation Request configuration successfully reloaded!",
-  "msg.tprequest.reload.failure": "Failed to reload Teleportation Request configuration! Please check the configuration file.",
+  "msg.tprequest.reload.failure": "Errors occurred while reloading Teleportation Request configuration, reset to default.",
   "msg.tprequest.respond.format": "%s %s %s",
   "msg.tprequest.self": "You can't teleport to yourself!",
   "msg.tprequest.sent": "Teleportation request sent! Expiration Time: %d tick(s)",

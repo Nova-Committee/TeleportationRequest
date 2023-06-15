@@ -226,7 +226,14 @@ public class CommandInit {
                         alias.forEach(a -> src.sendFeedback(new LiteralText("/" + a).formatted(Formatting.YELLOW), false));
                     }
                     return 1;
-                }).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_HELP, 0))).requires(p -> true));
+                }).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_HELP, 0)))
+                .then(CommandManager.literal("reload").executes(ctx -> {
+                    final var success = TeleportationRequest.reload();
+                    ctx.getSource().sendFeedback(new TranslatableText("msg.tprequest.reload." + (success ? "success" : "failure")
+                            .formatted(success ? Formatting.GREEN : Formatting.RED)), false);
+                    return success ? 1 : 0;
+                }).requires(p -> Utilities.checkPerm(p, PermNode.ADMIN_RELOAD, p.getServer().getOpPermissionLevel())))
+                .requires(p -> true));
         for (final var e : cmds.entrySet()) {
             final var p = e.getValue();
             TeleportationRequest.getAlternativesFor(e.getKey()).forEach(a -> dispatcher.register(CommandManager.literal(a)

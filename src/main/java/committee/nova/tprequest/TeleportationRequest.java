@@ -66,4 +66,10 @@ public class TeleportationRequest implements ModInitializer {
             return Optional.empty();
         }
     }
+
+    public static boolean reload() {
+        final var reloaded = AutoConfig.getConfigHolder(TprConfig.class).load();
+        cfg = AutoConfig.getConfigHolder(TprConfig.class).getConfig();
+        return reloaded;
+    }
 }
