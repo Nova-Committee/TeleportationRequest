@@ -35,7 +35,7 @@ dependencies {
     modImplementation "fr.catcore:server-translations-api:1.4.12+1.18.2"
     // modImplementation 'net.luckperms:api:5.4'
     modImplementation include("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
-    modImplementation include("me.shedaniel.cloth:cloth-config-fabric:6.4.90")
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:6.4.90"
 
     modLocalRuntime "maven.modrinth:luckperms:5.3.86"
 }
