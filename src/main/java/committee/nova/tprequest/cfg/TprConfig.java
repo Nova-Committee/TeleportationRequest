@@ -10,9 +10,9 @@ import java.util.List;
 @Config(name = TeleportationRequest.MODID)
 public class TprConfig implements ConfigData {
     @Comment("Cool-down time (tick) after a successful teleportation request")
-    public int tpCd = 600;
+    public double tpCd = 60.0;
     @Comment("Expiration time (tick) of a teleportation request")
-    public int expirationTime = 1200;
+    public double expirationTime = 60.0;
     @Comment("Short alternatives of /trtpa")
     public List<String> saTpa = List.of("tpa");
     @Comment("Short alternatives of /trtpahere")

@@ -40,11 +40,15 @@ public class TeleportationRequest implements ModInitializer {
     }
 
     public static int getTpCd() {
-        return cfg.tpCd;
+        return getActualTick(cfg.tpCd);
     }
 
     public static int getExpirationTime() {
-        return cfg.expirationTime;
+        return getActualTick(cfg.expirationTime);
+    }
+
+    private static int getActualTick(double t) {
+        return (int) (t * 20.0);
     }
 
     public static List<String> getAlternativesFor(String cmd) {

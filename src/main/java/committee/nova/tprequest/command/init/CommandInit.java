@@ -38,7 +38,7 @@ public class CommandInit {
                             }
                             final ITeleportable t = (ITeleportable) sender;
                             if (t.isCoolingDown()) {
-                                src.sendError(new TranslatableText("msg.tprequest.cd", t.getTeleportCd()));
+                                src.sendError(new TranslatableText("msg.tprequest.cd", Utilities.getActualSecondStr(t.getTeleportCd())));
                                 return 0;
                             }
                             final var request = new TeleportRequest.To(sender.getUuid(), receiver.getUuid());
@@ -49,7 +49,7 @@ public class CommandInit {
                                 return 0;
                             }
                             final String id = request.getId().toString();
-                            src.sendFeedback(new TranslatableText("msg.tprequest.sent", timeout).formatted(Formatting.GREEN), false);
+                            src.sendFeedback(new TranslatableText("msg.tprequest.sent", Utilities.getActualSecondStr(timeout)).formatted(Formatting.GREEN), false);
                             final Text summary = request.getSummary(src.getServer());
                             src.sendFeedback(new TranslatableText("selection.tprequest.cancel").setStyle(Style.EMPTY
                                     .withColor(Formatting.GRAY)
@@ -90,7 +90,7 @@ public class CommandInit {
                             }
                             final ITeleportable t = (ITeleportable) sender;
                             if (t.isCoolingDown()) {
-                                src.sendError(new TranslatableText("msg.tprequest.cd", t.getTeleportCd()));
+                                src.sendError(new TranslatableText("msg.tprequest.cd", Utilities.getActualSecondStr(t.getTeleportCd())));
                                 return 0;
                             }
                             final var request = new TeleportRequest.Here(sender.getUuid(), receiver.getUuid());
@@ -101,7 +101,7 @@ public class CommandInit {
                                 return 0;
                             }
                             final String id = request.getId().toString();
-                            src.sendFeedback(new TranslatableText("msg.tprequest.sent", timeout).formatted(Formatting.GREEN), false);
+                            src.sendFeedback(new TranslatableText("msg.tprequest.sent", Utilities.getActualSecondStr(timeout)).formatted(Formatting.GREEN), false);
                             final Text summary = request.getSummary(src.getServer());
                             src.sendFeedback(new TranslatableText("selection.tprequest.cancel").setStyle(Style.EMPTY
                                     .withColor(Formatting.GRAY)
