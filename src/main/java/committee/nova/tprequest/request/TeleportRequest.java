@@ -9,6 +9,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 import java.util.UUID;
 
@@ -70,8 +73,10 @@ public interface TeleportRequest {
             final ServerPlayerEntity oS = server.getPlayerManager().getPlayer(sender);
             final ServerPlayerEntity oR = server.getPlayerManager().getPlayer(receiver);
             if (oS == null || oR == null) return false;
+            final RegistryKey<World> formerWorld = oS.getWorld().getRegistryKey();
+            final Vec3d formerPos = oS.getPos();
             oS.teleport(oR.getWorld(), oR.getX(), oR.getY(), oR.getZ(), oR.getYaw(), oR.getPitch());
-            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
+            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType(), formerWorld, formerPos);
             return true;
         }
 
@@ -140,8 +145,10 @@ public interface TeleportRequest {
             final ServerPlayerEntity oS = server.getPlayerManager().getPlayer(sender);
             final ServerPlayerEntity oR = server.getPlayerManager().getPlayer(receiver);
             if (oS == null || oR == null) return false;
+            final RegistryKey<World> formerWorld = oR.getWorld().getRegistryKey();
+            final Vec3d formerPos = oR.getPos();
             oR.teleport(oS.getWorld(), oS.getX(), oS.getY(), oS.getZ(), oS.getYaw(), oS.getPitch());
-            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
+            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType(), formerWorld, formerPos);
             return true;
         }
 
