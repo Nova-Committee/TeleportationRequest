@@ -26,7 +26,9 @@ public interface TeleportRequest {
 
     boolean isIgnored();
 
-    int getExpiration();
+    int getExpirationTime();
+
+    void setExpirationTime(int timeout);
 
     UUID getSender();
 
@@ -40,9 +42,16 @@ public interface TeleportRequest {
         return getSummary(server).append(",").append(new LiteralText(getId().toString()));
     }
 
+    default boolean isSender(ServerPlayerEntity player) {
+        return getSender().equals(player.getUuid());
+    }
+
+    default boolean isReceiver(ServerPlayerEntity player) {
+        return getReceiver().equals(player.getUuid());
+    }
+
     default boolean isRelevantTo(ServerPlayerEntity player) {
-        final UUID uuid = player.getUuid();
-        return uuid.equals(getSender()) || uuid.equals(getReceiver());
+        return isSender(player) || isReceiver(player);
     }
 
     class To implements TeleportRequest {
@@ -91,8 +100,13 @@ public interface TeleportRequest {
         }
 
         @Override
-        public int getExpiration() {
+        public int getExpirationTime() {
             return timeout;
+        }
+
+        @Override
+        public void setExpirationTime(int timeout) {
+            this.timeout = timeout;
         }
 
         @Override
@@ -163,8 +177,13 @@ public interface TeleportRequest {
         }
 
         @Override
-        public int getExpiration() {
+        public int getExpirationTime() {
             return timeout;
+        }
+
+        @Override
+        public void setExpirationTime(int timeout) {
+            this.timeout = timeout;
         }
 
         @Override

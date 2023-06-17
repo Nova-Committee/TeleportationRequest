@@ -10,6 +10,7 @@ public enum PermNode {
     COMMON_TPACCEPT,
     COMMON_TPDENY,
     COMMON_TPIGNORE,
+    COMMON_TPLIST,
     ADMIN_RELOAD;
 
     public String getNode() {

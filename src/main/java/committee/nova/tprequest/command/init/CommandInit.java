@@ -42,7 +42,7 @@ public class CommandInit {
                                 return 0;
                             }
                             final var request = new TeleportRequest.To(sender.getUuid(), receiver.getUuid());
-                            final int timeout = request.getExpiration();
+                            final int timeout = request.getExpirationTime();
                             final boolean sent = ServerStorage.addRequest(request);
                             if (!sent) {
                                 src.sendError(new TranslatableText("msg.tprequest.existed"));
@@ -94,7 +94,7 @@ public class CommandInit {
                                 return 0;
                             }
                             final var request = new TeleportRequest.Here(sender.getUuid(), receiver.getUuid());
-                            final int timeout = request.getExpiration();
+                            final int timeout = request.getExpirationTime();
                             final boolean sent = ServerStorage.addRequest(request);
                             if (!sent) {
                                 src.sendError(new TranslatableText("msg.tprequest.existed"));
@@ -215,6 +215,62 @@ public class CommandInit {
                             return 1;
                         })
         ).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPIGNORE, 0)).executes(CommandImpl::ignore)));
+        cmds.put("trtplist", dispatcher.register(CommandManager.literal("trtplist")
+                .executes(ctx -> {
+                    final ServerCommandSource src = ctx.getSource();
+                    final MinecraftServer server = src.getServer();
+                    final ServerPlayerEntity player = src.getPlayer();
+                    final List<TeleportRequest> requests = ServerStorage.getRequestCopied();
+                    final List<TeleportRequest> received = requests.stream().filter(r -> r.isReceiver(player)).toList();
+                    final List<TeleportRequest> sent = requests.stream().filter(r -> r.isSender(player)).toList();
+                    boolean empty = true;
+                    if (!sent.isEmpty()) {
+                        empty = false;
+                        src.sendFeedback(new TranslatableText("category.tprequest.sent").formatted(Formatting.AQUA), false);
+                        sent.forEach(r -> {
+                            final Text summary = r.getSummary(src.getServer());
+                            src.sendFeedback(summary, false);
+                            src.sendFeedback(new TranslatableText("selection.tprequest.cancel").setStyle(Style.EMPTY
+                                    .withColor(Formatting.GRAY)
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpcancel " + r.getId().toString()))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                            new TranslatableText("selection.tprequest.cancel.info", summary)))), false);
+                        });
+                    }
+                    if (!received.isEmpty()) {
+                        empty = false;
+                        src.sendFeedback(new TranslatableText("category.tprequest.received").formatted(Formatting.LIGHT_PURPLE), false);
+                        received.forEach(t -> {
+                            final MutableText summary = t.getSummary(server);
+                            final String id = t.getId().toString();
+                            final boolean ignored = t.isIgnored();
+                            src.sendFeedback(summary.styled(s -> {
+                                if (ignored) return s.withColor(Formatting.GRAY);
+                                return s;
+                            }).append(t.isIgnored() ?
+                                    new TranslatableText("status.tprequest.ignored") : LiteralText.EMPTY), false);
+                            src.sendFeedback(new TranslatableText("msg.tprequest.respond.format",
+                                    new TranslatableText("selection.tprequest.accept").setStyle(Style.EMPTY
+                                            .withColor(Formatting.GREEN)
+                                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpaccept " + id))
+                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                    new TranslatableText("selection.tprequest.accept.info", summary)))),
+                                    new TranslatableText("selection.tprequest.deny").setStyle(Style.EMPTY
+                                            .withColor(Formatting.RED)
+                                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpdeny " + id))
+                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                    new TranslatableText("selection.tprequest.deny.info", summary)))),
+                                    ignored ? LiteralText.EMPTY : new TranslatableText("selection.tprequest.ignore").setStyle(Style.EMPTY
+                                            .withColor(Formatting.GRAY)
+                                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpignore " + id))
+                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                    new TranslatableText("selection.tprequest.ignore.info", summary))))), false);
+                        });
+                    }
+                    if (empty) src.sendError(new TranslatableText("msg.tprequest.no_pending"));
+                    return 1;
+                })
+                .requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPLIST, 0))));
         dispatcher.register(CommandManager.literal("tprequest")
                 .then(CommandManager.literal("help").executes(ctx -> {
                     final ServerCommandSource src = ctx.getSource();
@@ -228,8 +284,9 @@ public class CommandInit {
                     return 1;
                 }).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_HELP, 0)))
                 .then(CommandManager.literal("reload").executes(ctx -> {
-                    final var success = TeleportationRequest.reload();
-                    ctx.getSource().sendFeedback(new TranslatableText("msg.tprequest.reload." + (success ? "success" : "failure")
+                    final ServerCommandSource src = ctx.getSource();
+                    final var success = TeleportationRequest.reload(src.getServer());
+                    src.sendFeedback(new TranslatableText("msg.tprequest.reload." + (success ? "success" : "failure")
                             .formatted(success ? Formatting.GREEN : Formatting.RED)), false);
                     return success ? 1 : 0;
                 }).requires(p -> Utilities.checkPerm(p, PermNode.ADMIN_RELOAD, p.getServer().getOpPermissionLevel())))

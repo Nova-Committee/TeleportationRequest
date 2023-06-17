@@ -1,4 +1,6 @@
 {
+  "category.tprequest.received": "Pending requests received:",
+  "category.tprequest.sent": "Pending requests sent:",
   "desc.tprequest.trtpa": "/trtpa <Player> : Send a request to teleport to the location of the target player.",
   "desc.tprequest.trtpahere": "/trtpahere <Player> : Send a request, asking the target player to teleport to your location.",
   "desc.tprequest.trtpaccept": "/trtpaccept : Accept the pending request. If more than one, list them.",
@@ -19,6 +21,7 @@
   "msg.tprequest.info.to": "%s wanted to teleport to you",
   "msg.tprequest.invalid_uuid": "Illegal UUID format!",
   "msg.tprequest.following": "The following request(s) were found:",
+  "msg.tprequest.no_pending": "No pending request found...",
   "msg.tprequest.notfound": "No matching request %s",
   "msg.tprequest.not_present": "Cannot get request sender or receiver...",
   "msg.tprequest.reload.success": "Teleportation Request configuration successfully reloaded!",

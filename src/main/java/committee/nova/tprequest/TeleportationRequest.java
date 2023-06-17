@@ -1,5 +1,6 @@
 package committee.nova.tprequest;
 
+import committee.nova.tprequest.api.ITeleportable;
 import committee.nova.tprequest.callback.TeleportationCallback;
 import committee.nova.tprequest.cfg.TprConfig;
 import committee.nova.tprequest.command.argument.TeleportRequestArgument;
@@ -13,6 +14,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.command.argument.ArgumentTypes;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -59,6 +61,7 @@ public class TeleportationRequest implements ModInitializer {
             case "trtpcancel" -> cfg.saTpcancel;
             case "trtpdeny" -> cfg.saTpdeny;
             case "trtpignore" -> cfg.saTpignore;
+            case "trtplist" -> cfg.saTplist;
             default -> Collections.emptyList();
         };
     }
@@ -71,9 +74,22 @@ public class TeleportationRequest implements ModInitializer {
         }
     }
 
-    public static boolean reload() {
+    public static boolean reload(MinecraftServer server) {
         final var reloaded = AutoConfig.getConfigHolder(TprConfig.class).load();
         cfg = AutoConfig.getConfigHolder(TprConfig.class).getConfig();
+        postReload(server);
         return reloaded;
+    }
+
+    private static void postReload(MinecraftServer server) {
+        final int newExpiration = getExpirationTime();
+        ServerStorage.requests.forEach(r -> {
+            if (newExpiration < r.getExpirationTime()) r.setExpirationTime(newExpiration);
+        });
+        final int newCd = getTpCd();
+        server.getPlayerManager().getPlayerList().forEach(p -> {
+            final ITeleportable t = (ITeleportable) p;
+            if (t.getTeleportCd() > newCd) t.setTeleportCd(newCd);
+        });
     }
 }
