@@ -29,7 +29,7 @@
   "msg.tprequest.respond.format": "%s %s %s",
   "msg.tprequest.self": "传送目标不能是你自己！",
   "msg.tprequest.sent": "传送请求已发送！有效期：%s秒",
-  "msg.tprequest.timeout": "%s已超时……",
+  "msg.tprequest.timeout": "传送请求%s已超时……",
   "msg.tprequest.unknown_player": "未知玩家",
   "selection.tprequest.accept": "[接受]",
   "selection.tprequest.cancel": "[取消]",
