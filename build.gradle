@@ -20,6 +20,7 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven { url "https://maven.shedaniel.me/" }
 }
 
 dependencies {
@@ -31,6 +32,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     // modImplementation 'net.luckperms:api:5.4'
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:10.0.96"
     modImplementation include("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
 }
 

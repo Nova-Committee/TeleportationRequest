@@ -4,6 +4,7 @@
   "package": "committee.nova.tprequest.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinPlayerManager",
     "MixinServerPlayerEntity"
   ],
   "injectors": {

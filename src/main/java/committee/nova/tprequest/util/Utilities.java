@@ -28,4 +28,12 @@ public class Utilities {
     public static boolean checkPerm(ServerCommandSource player, PermNode permNode, int defaultRequiredLevel) {
         return Permissions.check(player, permNode.getNode(), defaultRequiredLevel);
     }
+
+    public static double getActualSecond(int tick) {
+        return tick / 20.0;
+    }
+
+    public static String getActualSecondStr(int tick) {
+        return String.format("%.1f", tick / 20.0);
+    }
 }

@@ -1,10 +1,13 @@
 package committee.nova.tprequest;
 
+import committee.nova.tprequest.api.ITeleportable;
 import committee.nova.tprequest.callback.TeleportationCallback;
-import committee.nova.tprequest.cfg.Config;
+import committee.nova.tprequest.cfg.TprConfig;
 import committee.nova.tprequest.command.argument.TeleportRequestArgument;
 import committee.nova.tprequest.command.init.CommandInit;
 import committee.nova.tprequest.storage.ServerStorage;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.YamlConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -12,75 +15,81 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class TeleportationRequest implements ModInitializer {
     public static final String MODID = "tprequest";
-
-    private static Config cfg;
-    private static int tpCd;
-    private static int expirationTime;
-    private static boolean shortAlternatives;
-    private static String notificationSound;
+    private static TprConfig cfg;
 
     @Override
     public void onInitialize() {
-        syncCfg();
+        AutoConfig.register(TprConfig.class, YamlConfigSerializer::new);
+        cfg = AutoConfig.getConfigHolder(TprConfig.class).getConfig();
         ArgumentTypeRegistry.registerArgumentType(new Identifier(MODID, "teleport_request"), TeleportRequestArgument.class, ConstantArgumentSerializer.of(TeleportRequestArgument::instance));
         ServerTickEvents.END_SERVER_TICK.register(ServerStorage::tick);
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> ServerStorage.requests.clear());
         CommandRegistrationCallback.EVENT.register(CommandInit::init);
-        TeleportationCallback.EVENT.register(((sender, receiver, tpType) -> TeleportationRequest.getNotificationSound()
+        TeleportationCallback.EVENT.register(((sender, receiver, tpType, formerWorld, formerPos) -> TeleportationRequest.getNotificationSound()
                 .ifPresent(r -> sender.playSound(r, SoundCategory.PLAYERS, 1.0F, 1.0F))));
     }
 
-    public static void syncCfg() {
-        if (cfg == null) cfg = Config.of("TeleportationRequest-Config").provider(path -> """
-                # TeleportationRequest-Config
-                # Cool-down time (tick) after a successful teleportation request
-                tpCd=600
-                # Expiration time (tick) of a teleportation request
-                expirationTime=1200
-                # Set to true to register short alternatives of teleportation request commands, e.g. /trtpa -> /tpa
-                shortAlternatives=true
-                # Notification sound to be played after a teleportation. Leave a blank to disable.
-                notificationSound=minecraft:entity.enderman.teleport
-                """
-        ).request();
-        tpCd = cfg.getOrDefault("tpCd", 600);
-        expirationTime = cfg.getOrDefault("expirationTime", 1200);
-        shortAlternatives = cfg.getOrDefault("shortAlternatives", true);
-        notificationSound = cfg.getOrDefault("notificationSound", "minecraft:entity.enderman.teleport");
-    }
-
     public static int getTpCd() {
-        return tpCd;
+        return getActualTick(cfg.tpCd);
     }
 
     public static int getExpirationTime() {
-        return expirationTime;
+        return getActualTick(cfg.expirationTime);
     }
 
-    public static boolean shouldRegisterShortAlternatives() {
-        return shortAlternatives;
+    private static int getActualTick(double t) {
+        return (int) (t * 20.0);
+    }
+
+    public static List<String> getAlternativesFor(String cmd) {
+        return switch (cmd) {
+            case "trtpa" -> cfg.saTpa;
+            case "trtpahere" -> cfg.saTpahere;
+            case "trtpaccept" -> cfg.saTpaccept;
+            case "trtpcancel" -> cfg.saTpcancel;
+            case "trtpdeny" -> cfg.saTpdeny;
+            case "trtpignore" -> cfg.saTpignore;
+            case "trtplist" -> cfg.saTplist;
+            default -> Collections.emptyList();
+        };
     }
 
     public static Optional<SoundEvent> getNotificationSound() {
         try {
-            return Optional.ofNullable(Registries.SOUND_EVENT.get(new Identifier(notificationSound)));
+            return Optional.ofNullable(Registries.SOUND_EVENT.get(new Identifier(cfg.notificationSound)));
         } catch (InvalidIdentifierException ignored) {
             return Optional.empty();
         }
     }
 
-    public static boolean reload() {
-        final boolean r = cfg.reload();
-        syncCfg();
-        return r;
+    public static boolean reload(MinecraftServer server) {
+        final var reloaded = AutoConfig.getConfigHolder(TprConfig.class).load();
+        cfg = AutoConfig.getConfigHolder(TprConfig.class).getConfig();
+        postReload(server);
+        return reloaded;
+    }
+
+    private static void postReload(MinecraftServer server) {
+        final int newExpiration = getExpirationTime();
+        ServerStorage.requests.forEach(r -> {
+            if (newExpiration < r.getExpirationTime()) r.setExpirationTime(newExpiration);
+        });
+        final int newCd = getTpCd();
+        server.getPlayerManager().getPlayerList().forEach(p -> {
+            final ITeleportable t = (ITeleportable) p;
+            if (t.getTeleportCd() > newCd) t.setTeleportCd(newCd);
+        });
     }
 }

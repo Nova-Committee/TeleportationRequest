@@ -3,11 +3,14 @@ package committee.nova.tprequest.request;
 import committee.nova.tprequest.TeleportationRequest;
 import committee.nova.tprequest.callback.TeleportationCallback;
 import committee.nova.tprequest.util.Utilities;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.UUID;
 
@@ -22,7 +25,9 @@ public interface TeleportRequest {
 
     boolean isIgnored();
 
-    int getExpiration();
+    int getExpirationTime();
+
+    void setExpirationTime(int timeout);
 
     UUID getSender();
 
@@ -36,9 +41,16 @@ public interface TeleportRequest {
         return getSummary(server).append(",").append(Text.literal(getId().toString()));
     }
 
+    default boolean isSender(ServerPlayerEntity player) {
+        return getSender().equals(player.getUuid());
+    }
+
+    default boolean isReceiver(ServerPlayerEntity player) {
+        return getReceiver().equals(player.getUuid());
+    }
+
     default boolean isRelevantTo(ServerPlayerEntity player) {
-        final UUID uuid = player.getUuid();
-        return uuid.equals(getSender()) || uuid.equals(getReceiver());
+        return isSender(player) || isReceiver(player);
     }
 
     class To implements TeleportRequest {
@@ -69,8 +81,10 @@ public interface TeleportRequest {
             final ServerPlayerEntity oS = server.getPlayerManager().getPlayer(sender);
             final ServerPlayerEntity oR = server.getPlayerManager().getPlayer(receiver);
             if (oS == null || oR == null) return false;
+            final RegistryKey<World> formerWorld = oS.getWorld().getRegistryKey();
+            final Vec3d formerPos = oS.getPos();
             oS.teleport(oR.getWorld(), oR.getX(), oR.getY(), oR.getZ(), oR.getYaw(), oR.getPitch());
-            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
+            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType(), formerWorld, formerPos);
             return true;
         }
 
@@ -85,8 +99,13 @@ public interface TeleportRequest {
         }
 
         @Override
-        public int getExpiration() {
+        public int getExpirationTime() {
             return timeout;
+        }
+
+        @Override
+        public void setExpirationTime(int timeout) {
+            this.timeout = timeout;
         }
 
         @Override
@@ -139,8 +158,10 @@ public interface TeleportRequest {
             final ServerPlayerEntity oS = server.getPlayerManager().getPlayer(sender);
             final ServerPlayerEntity oR = server.getPlayerManager().getPlayer(receiver);
             if (oS == null || oR == null) return false;
+            final RegistryKey<World> formerWorld = oR.getWorld().getRegistryKey();
+            final Vec3d formerPos = oR.getPos();
             oR.teleport(oS.getWorld(), oS.getX(), oS.getY(), oS.getZ(), oS.getYaw(), oS.getPitch());
-            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType());
+            TeleportationCallback.EVENT.invoker().postTeleport(oS, oR, getType(), formerWorld, formerPos);
             return true;
         }
 
@@ -155,8 +176,13 @@ public interface TeleportRequest {
         }
 
         @Override
-        public int getExpiration() {
+        public int getExpirationTime() {
             return timeout;
+        }
+
+        @Override
+        public void setExpirationTime(int timeout) {
+            this.timeout = timeout;
         }
 
         @Override

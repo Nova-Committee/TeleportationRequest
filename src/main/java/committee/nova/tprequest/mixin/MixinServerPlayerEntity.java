@@ -32,12 +32,15 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity implements IT
 
     @Inject(method = "writeCustomDataToNbt", at = @At("HEAD"))
     private void inject$write(NbtCompound nbt, CallbackInfo ci) {
-        nbt.putInt("tprequest_cd", cd);
+        final var tag = new NbtCompound();
+        tag.putInt("cd", cd);
+        nbt.put("tprequest", tag);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
     private void inject$read(NbtCompound nbt, CallbackInfo ci) {
-        cd = nbt.getInt("tprequest_cd");
+        if (!nbt.contains("tprequest")) return;
+        cd = nbt.getCompound("tprequest").getInt("cd");
     }
 
     @Inject(method = "playerTick", at = @At("HEAD"))
