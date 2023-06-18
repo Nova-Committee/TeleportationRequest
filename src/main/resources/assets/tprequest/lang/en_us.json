@@ -25,6 +25,7 @@
   "msg.tprequest.respond.format": "%s %s %s",
   "msg.tprequest.self": "You can't teleport to yourself!",
   "msg.tprequest.sent": "Teleportation request sent! Expiration Time: %d tick(s)",
+  "msg.tprequest.timeout": "%s timeout...",
   "msg.tprequest.unknown_player": "Unknown Player",
   "selection.tprequest.accept": "[Accept]",
   "selection.tprequest.cancel": "[Cancel]",

@@ -13,15 +13,13 @@ public class ServerStorage {
     public static final CopyOnWriteArrayList<TeleportRequest> requests = new CopyOnWriteArrayList<>();
 
     public static void tick(MinecraftServer server) {
-        final var it = requests.iterator();
-        while (it.hasNext()) {
-            final var r = it.next();
-            if (!r.tick()) continue;
+        requests.forEach(r -> {
+            if (!r.tick()) return;
             final Text timeout = Text.translatable("msg.tprequest.timeout", r.getSummary(server)).formatted(Formatting.AQUA);
             if (!r.isIgnored())
                 Utilities.getPlayer(server, r.getReceiver()).ifPresent(p -> p.sendMessage(timeout, false));
-            it.remove();
-        }
+            requests.remove(r);
+        });
     }
 
     public static boolean addRequest(TeleportRequest request) {
