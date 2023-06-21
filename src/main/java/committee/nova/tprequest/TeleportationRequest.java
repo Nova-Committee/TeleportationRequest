@@ -1,9 +1,6 @@
 package committee.nova.tprequest;
 
-import committee.nova.tprequest.command.argument.TeleportRequestArgument;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -41,7 +38,6 @@ public class TeleportationRequest {
     }
 
     public TeleportationRequest() {
-        ArgumentTypes.register("teleport_request", TeleportRequestArgument.class, new EmptyArgumentSerializer<>(TeleportRequestArgument::instance));
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CFG);
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
                 () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
