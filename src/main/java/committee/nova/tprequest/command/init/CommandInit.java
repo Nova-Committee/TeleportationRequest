@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.brigadier.CommandDispatcher;
 import committee.nova.tprequest.TeleportationRequest;
 import committee.nova.tprequest.api.ITeleportable;
-import committee.nova.tprequest.command.argument.TeleportRequestArgument;
 import committee.nova.tprequest.command.impl.CommandImpl;
 import committee.nova.tprequest.permnode.PermNode;
 import committee.nova.tprequest.request.TeleportRequest;
@@ -16,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -142,10 +142,10 @@ public class CommandInit {
                         })).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPAHERE))
         );
         final var tpcancel = dispatcher.register(Commands.literal("trtpcancel").then(
-                Commands.argument("id", TeleportRequestArgument.instance())
+                Commands.argument("id", UuidArgument.uuid())
                         .requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPCANCEL)).executes(ctx -> {
                             final CommandSourceStack src = ctx.getSource();
-                            final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
+                            final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getSender().equals(srcPlayer.getUUID())) {
                                 src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
@@ -165,10 +165,10 @@ public class CommandInit {
                         })
         ).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPCANCEL)).executes(CommandImpl::cancel));
         final var tpaccept = dispatcher.register(Commands.literal("trtpaccept").then(
-                Commands.argument("id", TeleportRequestArgument.instance())
+                Commands.argument("id", UuidArgument.uuid())
                         .requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPACCEPT)).executes(ctx -> {
                             final CommandSourceStack src = ctx.getSource();
-                            final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
+                            final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getReceiver().equals(srcPlayer.getUUID())) {
                                 src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
@@ -190,10 +190,10 @@ public class CommandInit {
                         })
         ).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPACCEPT)).executes(CommandImpl::accept));
         final var tpdeny = dispatcher.register(Commands.literal("trtpdeny").then(
-                Commands.argument("id", TeleportRequestArgument.instance())
+                Commands.argument("id", UuidArgument.uuid())
                         .requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPDENY)).executes(ctx -> {
                             final CommandSourceStack src = ctx.getSource();
-                            final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
+                            final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getReceiver().equals(srcPlayer.getUUID())) {
                                 src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
@@ -211,10 +211,10 @@ public class CommandInit {
                         })
         ).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPDENY)).executes(CommandImpl::deny));
         final var tpignore = dispatcher.register(Commands.literal("trtpignore").then(
-                Commands.argument("id", TeleportRequestArgument.instance())
+                Commands.argument("id", UuidArgument.uuid())
                         .requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPIGNORE)).executes(ctx -> {
                             final CommandSourceStack src = ctx.getSource();
-                            final TeleportRequest request = TeleportRequestArgument.getRequest(ctx, "id");
+                            final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getReceiver().equals(srcPlayer.getUUID())) {
                                 src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));

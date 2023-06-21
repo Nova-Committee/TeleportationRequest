@@ -1,9 +1,6 @@
 package committee.nova.tprequest;
 
-import committee.nova.tprequest.command.argument.TeleportRequestArgument;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -11,9 +8,7 @@ import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkConstants;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
@@ -26,7 +21,6 @@ public class TeleportationRequest {
     private static final ForgeConfigSpec.IntValue expirationTime;
     private static final ForgeConfigSpec.BooleanValue shortAlternatives;
     private static final ForgeConfigSpec.ConfigValue<String> notificationSound;
-    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARG = DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, TeleportationRequest.MODID);
 
     static {
         final var builder = new ForgeConfigSpec.Builder();
@@ -44,8 +38,6 @@ public class TeleportationRequest {
     }
 
     public TeleportationRequest() {
-        ARG.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ARG.register(TeleportationRequest.MODID, () -> ArgumentTypeInfos.registerByClass(TeleportRequestArgument.class, new TeleportRequestArgument.Serializer()));
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CFG);
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
                 () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));

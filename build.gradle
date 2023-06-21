@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'committee.nova.tprequest.forge'
-version = '1.0.1'
+version = '1.0.2'
 
 java {
     archivesBaseName = 'TeleportationRequest-Forge-1.19.4-1.20'
