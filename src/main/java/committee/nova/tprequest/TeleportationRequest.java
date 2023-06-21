@@ -3,7 +3,6 @@ package committee.nova.tprequest;
 import committee.nova.tprequest.api.ITeleportable;
 import committee.nova.tprequest.callback.TeleportationCallback;
 import committee.nova.tprequest.cfg.TprConfig;
-import committee.nova.tprequest.command.argument.TeleportRequestArgument;
 import committee.nova.tprequest.command.init.CommandInit;
 import committee.nova.tprequest.storage.ServerStorage;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -12,8 +11,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.command.argument.ArgumentTypes;
-import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -33,7 +30,6 @@ public class TeleportationRequest implements ModInitializer {
     public void onInitialize() {
         AutoConfig.register(TprConfig.class, YamlConfigSerializer::new);
         cfg = AutoConfig.getConfigHolder(TprConfig.class).getConfig();
-        ArgumentTypes.register("teleport_request", TeleportRequestArgument.class, new ConstantArgumentSerializer<>(TeleportRequestArgument::instance));
         ServerTickEvents.END_SERVER_TICK.register(ServerStorage::tick);
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> ServerStorage.requests.clear());
         CommandRegistrationCallback.EVENT.register(CommandInit::init);
