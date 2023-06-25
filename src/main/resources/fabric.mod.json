@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "tprequest",
+  "version": "${version}",
+  "name": "Tprequest",
+  "description": "",
+  "authors": [
+    "Tapio"
+  ],
+  "contact": {
+    "sources": "https://github.com/Nova-Committee/TeleportationRequest"
+  },
+  "license": "AGPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "committee.nova.tprequest.TeleportationRequest"
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": ">=1.19"
+  },
+  "mixins": [
+    "tprequest.mixins.json"
+  ]
+}
