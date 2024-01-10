@@ -15,7 +15,7 @@ public class ServerStorage {
     public static void tick(MinecraftServer server) {
         requests.forEach(r -> {
             if (!r.tick()) return;
-            final Component timeout = Component.translatable("msg.tprequest.timeout", r.getSummary(server)).withStyle(ChatFormatting.AQUA);
+            final Component timeout = Component.translatable("传送请求%s已超时……", r.getSummary(server)).withStyle(ChatFormatting.AQUA);
             if (!r.isIgnored())
                 Utilities.getPlayer(server, r.getReceiver()).ifPresent(p -> p.displayClientMessage(timeout, false));
             requests.remove(r);

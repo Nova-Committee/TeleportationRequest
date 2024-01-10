@@ -107,7 +107,7 @@ public interface TeleportRequest {
 
         @Override
         public MutableComponent getSummary(MinecraftServer server) {
-            return Component.translatable("format.tprequest.summary.to",
+            return Component.translatable("[%s >> %s]",
                     Utilities.getPlayerName(server, sender), Utilities.getPlayerName(server, receiver)).withStyle(ChatFormatting.WHITE);
         }
     }
@@ -177,7 +177,7 @@ public interface TeleportRequest {
 
         @Override
         public MutableComponent getSummary(MinecraftServer server) {
-            return Component.translatable("format.tprequest.summary.here",
+            return Component.translatable("[%s << %s]",
                     Utilities.getPlayerName(server, sender), Utilities.getPlayerName(server, receiver));
         }
     }

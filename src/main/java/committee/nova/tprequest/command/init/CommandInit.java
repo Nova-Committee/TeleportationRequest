@@ -44,48 +44,48 @@ public class CommandInit {
                             final ServerPlayer sender = src.getPlayerOrException();
                             final ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
                             if (receiver.equals(sender) && Utilities.isProduction()) {
-                                src.sendFailure(Component.translatable("msg.tprequest.self"));
+                                src.sendFailure(Component.literal("传送目标不能是你自己！"));
                                 return 0;
                             }
                             final ITeleportable t = (ITeleportable) sender;
                             if (t.isCoolingDown()) {
-                                src.sendFailure(Component.translatable("msg.tprequest.cd", t.tprequest$getTeleportCd()));
+                                src.sendFailure(Component.translatable("传送冷却中，剩余 %d 刻……", t.tprequest$getTeleportCd()));
                                 return 0;
                             }
                             final var request = new To(sender.getUUID(), receiver.getUUID());
                             final int timeout = request.getExpiration();
                             final boolean sent = ServerStorage.addRequest(request);
                             if (!sent) {
-                                src.sendFailure(Component.translatable("msg.tprequest.existed"));
+                                src.sendFailure(Component.literal("存在未处理传送请求……"));
                                 return 0;
                             }
                             final String id = request.getId().toString();
-                            src.sendSuccess(() -> Component.translatable("msg.tprequest.sent", timeout)
+                            src.sendSuccess(() -> Component.translatable("传送请求已发送！有效期：%d 刻", timeout)
                                     .withStyle(ChatFormatting.GREEN), false);
                             final Component summary = request.getSummary(src.getServer());
-                            src.sendSuccess(() -> Component.translatable("selection.tprequest.cancel").setStyle(Style.EMPTY
+                            src.sendSuccess(() -> Component.literal("[取消]").setStyle(Style.EMPTY
                                     .withColor(ChatFormatting.GRAY)
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpcancel " + id))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                            Component.translatable("selection.tprequest.cancel.info", summary)))), false);
-                            receiver.displayClientMessage(Component.translatable("msg.tprequest.info.to", sender.getName())
+                                            Component.translatable("取消传送请求%s", summary)))), false);
+                            receiver.displayClientMessage(Component.translatable("%s 想要传送到你的位置", sender.getName())
                                     .withStyle(ChatFormatting.YELLOW), false);
-                            receiver.displayClientMessage(Component.translatable("msg.tprequest.respond.format",
-                                    Component.translatable("selection.tprequest.accept").setStyle(Style.EMPTY
+                            receiver.displayClientMessage(Component.translatable("%s %s %s",
+                                    Component.literal("[接受]").setStyle(Style.EMPTY
                                             .withColor(ChatFormatting.GREEN)
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpaccept " + id))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.translatable("selection.tprequest.accept.info", summary)))),
-                                    Component.translatable("selection.tprequest.deny").setStyle(Style.EMPTY
+                                                    Component.translatable("接受传送请求%s", summary)))),
+                                    Component.literal("[拒绝]").setStyle(Style.EMPTY
                                             .withColor(ChatFormatting.RED)
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpdeny " + id))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.translatable("selection.tprequest.deny.info", summary)))),
-                                    Component.translatable("selection.tprequest.ignore").setStyle(Style.EMPTY
+                                                    Component.translatable("拒绝传送请求%s", summary)))),
+                                    Component.literal("[忽略]").setStyle(Style.EMPTY
                                             .withColor(ChatFormatting.GRAY)
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpignore " + id))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.translatable("selection.tprequest.ignore.info", summary))))
+                                                    Component.translatable("忽略传送请求%s", summary))))
                             ), false);
                             return 1;
                         })).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPA))
@@ -97,47 +97,47 @@ public class CommandInit {
                             final ServerPlayer sender = src.getPlayerOrException();
                             final ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
                             if (receiver.equals(sender) && Utilities.isProduction()) {
-                                src.sendFailure(Component.translatable("msg.tprequest.self"));
+                                src.sendFailure(Component.translatable("传送目标不能是你自己！"));
                                 return 0;
                             }
                             final ITeleportable t = (ITeleportable) sender;
                             if (t.isCoolingDown()) {
-                                src.sendFailure(Component.translatable("msg.tprequest.cd", t.tprequest$getTeleportCd()));
+                                src.sendFailure(Component.translatable("传送冷却中，剩余 %d 刻……", t.tprequest$getTeleportCd()));
                                 return 0;
                             }
                             final var request = new Here(sender.getUUID(), receiver.getUUID());
                             final int timeout = request.getExpiration();
                             final boolean sent = ServerStorage.addRequest(request);
                             if (!sent) {
-                                src.sendFailure(Component.translatable("msg.tprequest.existed"));
+                                src.sendFailure(Component.translatable("存在未处理传送请求……"));
                                 return 0;
                             }
                             final String id = request.getId().toString();
-                            src.sendSuccess(() -> Component.translatable("msg.tprequest.sent", timeout).withStyle(ChatFormatting.GREEN), false);
+                            src.sendSuccess(() -> Component.translatable("传送请求已发送！有效期：%d 刻", timeout).withStyle(ChatFormatting.GREEN), false);
                             final Component summary = request.getSummary(src.getServer());
-                            src.sendSuccess(() -> Component.translatable("selection.tprequest.cancel").setStyle(Style.EMPTY
+                            src.sendSuccess(() -> Component.literal("[取消]").setStyle(Style.EMPTY
                                     .withColor(ChatFormatting.GRAY)
                                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpcancel " + id))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                            Component.translatable("selection.tprequest.cancel.info", summary)))), false);
-                            receiver.displayClientMessage(Component.translatable("msg.tprequest.info.here", sender.getName())
+                                            Component.translatable("取消传送请求%s", summary)))), false);
+                            receiver.displayClientMessage(Component.translatable("%s 想要你传送到 TA 的位置", sender.getName())
                                     .withStyle(ChatFormatting.YELLOW), false);
-                            receiver.displayClientMessage(Component.translatable("msg.tprequest.respond.format",
-                                    Component.translatable("selection.tprequest.accept").setStyle(Style.EMPTY
+                            receiver.displayClientMessage(Component.translatable("%s %s %s",
+                                    Component.literal("[接受]").setStyle(Style.EMPTY
                                             .withColor(ChatFormatting.GREEN)
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpaccept " + id))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.translatable("selection.tprequest.accept.info", summary)))),
-                                    Component.translatable("selection.tprequest.deny").setStyle(Style.EMPTY
+                                                    Component.translatable("接受传送请求%s", summary)))),
+                                    Component.literal("[拒绝]").setStyle(Style.EMPTY
                                             .withColor(ChatFormatting.RED)
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpdeny " + id))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.translatable("selection.tprequest.deny.info", summary)))),
-                                    Component.translatable("selection.tprequest.ignore").setStyle(Style.EMPTY
+                                                    Component.translatable("拒绝传送请求%s", summary)))),
+                                    Component.literal("[忽略]").setStyle(Style.EMPTY
                                             .withColor(ChatFormatting.GRAY)
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trtpignore " + id))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.translatable("selection.tprequest.ignore.info", summary))))
+                                                    Component.translatable("忽略传送请求%s", summary))))
                             ), false);
                             return 1;
                         })).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPAHERE))
@@ -149,18 +149,18 @@ public class CommandInit {
                             final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getSender().equals(srcPlayer.getUUID())) {
-                                src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
+                                src.sendFailure(Component.literal("未找到匹配的传送请求……"));
                                 return 0;
                             }
                             if (!ServerStorage.requests.remove(request)) {
-                                src.sendFailure(Component.translatable("msg.tprequest.already_removed"));
+                                src.sendFailure(Component.literal("传送请求已被移除……"));
                                 return 0;
                             }
                             final MinecraftServer server = src.getServer();
                             if (!request.isIgnored())
                                 Utilities.getPlayer(server, request.getReceiver()).ifPresent(s -> s.displayClientMessage(
-                                        Component.translatable("msg.tprequest.cancelled", request.getSummary(server)).withStyle(ChatFormatting.GRAY), false));
-                            src.sendSuccess(() -> Component.translatable("msg.tprequest.cancelled", request.getSummary(server))
+                                        Component.translatable("传送请求%s已取消。", request.getSummary(server)).withStyle(ChatFormatting.GRAY), false));
+                            src.sendSuccess(() -> Component.translatable("传送请求%s已取消。", request.getSummary(server))
                                     .withStyle(ChatFormatting.YELLOW), false);
                             return 1;
                         })
@@ -172,20 +172,20 @@ public class CommandInit {
                             final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getReceiver().equals(srcPlayer.getUUID())) {
-                                src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
+                                src.sendFailure(Component.literal("未找到匹配的传送请求……"));
                                 return 0;
                             }
                             final MinecraftServer server = src.getServer();
                             if (!request.execute(server)) {
-                                src.sendFailure(Component.translatable("msg.tprequest.not_present"));
+                                src.sendFailure(Component.literal("未找到传送请求的发送者或接收者……"));
                                 return 0;
                             }
                             Utilities.getPlayer(server, request.getSender()).ifPresent(p -> {
-                                p.displayClientMessage(Component.translatable("msg.tprequest.accepted",
+                                p.displayClientMessage(Component.translatable("传送请求%s已接受，传送中……",
                                         request.getSummary(server)).withStyle(ChatFormatting.GREEN), false);
                                 ((ITeleportable) p).tprequest$setTeleportCd(TeleportationRequest.getTpCd());
                             });
-                            src.sendSuccess(() -> Component.translatable("msg.tprequest.accepted", request.getSummary(server)).withStyle(ChatFormatting.GREEN), false);
+                            src.sendSuccess(() -> Component.translatable("传送请求%s已接受，传送中……", request.getSummary(server)).withStyle(ChatFormatting.GREEN), false);
                             ServerStorage.requests.remove(request);
                             return 1;
                         })
@@ -197,17 +197,17 @@ public class CommandInit {
                             final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getReceiver().equals(srcPlayer.getUUID())) {
-                                src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
+                                src.sendFailure(Component.literal("未找到匹配的传送请求……"));
                                 return 0;
                             }
                             if (!ServerStorage.requests.remove(request)) {
-                                src.sendFailure(Component.translatable("msg.tprequest.already_removed"));
+                                src.sendFailure(Component.literal("传送请求已被移除……"));
                                 return 0;
                             }
                             final MinecraftServer server = src.getServer();
-                            Utilities.getPlayer(server, request.getSender()).ifPresent(s -> s.displayClientMessage(Component.translatable("msg.tprequest.denied",
+                            Utilities.getPlayer(server, request.getSender()).ifPresent(s -> s.displayClientMessage(Component.translatable("传送请求%s已拒绝。",
                                     request.getSummary(server)).withStyle(ChatFormatting.RED), false));
-                            src.sendSuccess(() -> Component.translatable("msg.tprequest.denied", request.getSummary(server)).withStyle(ChatFormatting.YELLOW), false);
+                            src.sendSuccess(() -> Component.translatable("传送请求%s已拒绝。", request.getSummary(server)).withStyle(ChatFormatting.YELLOW), false);
                             return 1;
                         })
         ).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPDENY)).executes(CommandImpl::deny));
@@ -218,12 +218,12 @@ public class CommandInit {
                             final TeleportRequest request = Utilities.parseRequest(UuidArgument.getUuid(ctx, "id"));
                             final ServerPlayer srcPlayer = src.getPlayerOrException();
                             if (!request.getReceiver().equals(srcPlayer.getUUID())) {
-                                src.sendFailure(Component.translatable("msg.tprequest.notfound", ""));
+                                src.sendFailure(Component.literal("未找到匹配的传送请求……"));
                                 return 0;
                             }
                             request.setIgnored(true);
                             final MinecraftServer server = src.getServer();
-                            src.sendSuccess(() -> Component.translatable("msg.tprequest.ignored", request.getSummary(server)).withStyle(ChatFormatting.YELLOW), false);
+                            src.sendSuccess(() -> Component.translatable("传送请求%s已忽略。", request.getSummary(server)).withStyle(ChatFormatting.YELLOW), false);
                             return 1;
                         })
         ).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_TPIGNORE)).executes(CommandImpl::ignore));
@@ -240,7 +240,7 @@ public class CommandInit {
                 }).requires(p -> Utilities.checkPerm(p, PermNode.COMMON_HELP)))
                 .then(Commands.literal("reload").executes(ctx -> {
                     final boolean success = TeleportationRequest.reload();
-                    ctx.getSource().sendSuccess(() -> Component.translatable("msg.tprequest.reload." + (success ? "success" : "failure")
+                    ctx.getSource().sendSuccess(() -> Component.translatable((success ? "Teleportation Request 配置已重载！" : "未能重载 Teleportation Request 配置，请检查配置文件。")
                             .formatted(success ? ChatFormatting.GREEN : ChatFormatting.RED)), false);
                     return success ? 1 : 0;
                 }).requires(p -> Utilities.checkPerm(p, PermNode.ADMIN_RELOAD)))

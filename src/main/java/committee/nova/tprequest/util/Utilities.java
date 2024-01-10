@@ -19,11 +19,11 @@ import java.util.UUID;
 
 public class Utilities {
     public static final DynamicCommandExceptionType REQUEST_NOT_FOUND =
-            new DynamicCommandExceptionType(uuid -> Component.translatable("msg.tprequest.notfound", uuid));
+            new DynamicCommandExceptionType(uuid -> Component.translatable("未找到匹配的传送请求%s……", uuid));
 
     public static Component getPlayerName(MinecraftServer server, UUID uuid) {
         final ServerPlayer p = server.getPlayerList().getPlayer(uuid);
-        return p == null ? Component.translatable("msg.tprequest.unknown_player") : p.getName();
+        return p == null ? Component.literal("未知玩家") : p.getName();
     }
 
     public static Optional<ServerPlayer> getPlayer(MinecraftServer server, UUID player) {
