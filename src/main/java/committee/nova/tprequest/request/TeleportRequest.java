@@ -6,8 +6,11 @@ import committee.nova.tprequest.util.Utilities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.UUID;
@@ -70,8 +73,10 @@ public interface TeleportRequest {
             final ServerPlayer oS = server.getPlayerList().getPlayer(sender);
             final ServerPlayer oR = server.getPlayerList().getPlayer(receiver);
             if (oS == null || oR == null) return false;
+            final ResourceKey<Level> formerWorld = oS.level().dimension();
+            final Vec3 formerPos = oS.position();
             oS.teleportTo(oR.serverLevel(), oR.getX(), oR.getY(), oR.getZ(), oR.getYRot(), oR.getXRot());
-            MinecraftForge.EVENT_BUS.post(new TeleportationEvent(oS, oR, getType()));
+            MinecraftForge.EVENT_BUS.post(new TeleportationEvent(oS, oR, getType(), formerWorld, formerPos));
             return true;
         }
 
@@ -140,8 +145,10 @@ public interface TeleportRequest {
             final ServerPlayer oS = server.getPlayerList().getPlayer(sender);
             final ServerPlayer oR = server.getPlayerList().getPlayer(receiver);
             if (oS == null || oR == null) return false;
+            final ResourceKey<Level> formerWorld = oR.level().dimension();
+            final Vec3 formerPos = oR.position();
             oR.teleportTo(oS.serverLevel(), oS.getX(), oS.getY(), oS.getZ(), oS.getYRot(), oS.getXRot());
-            MinecraftForge.EVENT_BUS.post(new TeleportationEvent(oS, oR, getType()));
+            MinecraftForge.EVENT_BUS.post(new TeleportationEvent(oS, oR, getType(), formerWorld, formerPos));
             return true;
         }
 

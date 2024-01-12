@@ -7,10 +7,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServerStorage {
-    public static final ArrayList<TeleportRequest> requests = new ArrayList<>();
+    public static final CopyOnWriteArrayList<TeleportRequest> requests = new CopyOnWriteArrayList<>();
 
     public static void tick(MinecraftServer server) {
         requests.forEach(r -> {

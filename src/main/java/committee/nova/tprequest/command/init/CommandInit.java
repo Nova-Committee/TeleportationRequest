@@ -49,7 +49,7 @@ public class CommandInit {
                             }
                             final ITeleportable t = (ITeleportable) sender;
                             if (t.isCoolingDown()) {
-                                src.sendFailure(Component.translatable("传送冷却中，剩余 %d 刻……", t.tprequest$getTeleportCd()));
+                                src.sendFailure(Component.translatable("传送冷却中，剩余 %s 刻……", String.valueOf(t.tprequest$getTeleportCd())));
                                 return 0;
                             }
                             final var request = new To(sender.getUUID(), receiver.getUUID());
@@ -60,7 +60,7 @@ public class CommandInit {
                                 return 0;
                             }
                             final String id = request.getId().toString();
-                            src.sendSuccess(() -> Component.translatable("传送请求已发送！有效期：%d 刻", timeout)
+                            src.sendSuccess(() -> Component.translatable("传送请求已发送！有效期：%s 刻", String.valueOf(timeout))
                                     .withStyle(ChatFormatting.GREEN), false);
                             final Component summary = request.getSummary(src.getServer());
                             src.sendSuccess(() -> Component.literal("[取消]").setStyle(Style.EMPTY
@@ -102,7 +102,7 @@ public class CommandInit {
                             }
                             final ITeleportable t = (ITeleportable) sender;
                             if (t.isCoolingDown()) {
-                                src.sendFailure(Component.translatable("传送冷却中，剩余 %d 刻……", t.tprequest$getTeleportCd()));
+                                src.sendFailure(Component.translatable("传送冷却中，剩余 %s 刻……", String.valueOf(t.tprequest$getTeleportCd())));
                                 return 0;
                             }
                             final var request = new Here(sender.getUUID(), receiver.getUUID());
@@ -113,7 +113,7 @@ public class CommandInit {
                                 return 0;
                             }
                             final String id = request.getId().toString();
-                            src.sendSuccess(() -> Component.translatable("传送请求已发送！有效期：%d 刻", timeout).withStyle(ChatFormatting.GREEN), false);
+                            src.sendSuccess(() -> Component.translatable("传送请求已发送！有效期：%s 刻", String.valueOf(timeout)).withStyle(ChatFormatting.GREEN), false);
                             final Component summary = request.getSummary(src.getServer());
                             src.sendSuccess(() -> Component.literal("[取消]").setStyle(Style.EMPTY
                                     .withColor(ChatFormatting.GRAY)
