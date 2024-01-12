@@ -11,19 +11,19 @@ public class TeleportationEvent extends Event {
     private final ServerPlayer sender;
     private final ServerPlayer receiver;
     private final TeleportRequest.TeleportationType tpType;
-    private final ResourceKey<Level> targetLevel;
-    private final Vec3 targetPos;
+    private final ResourceKey<Level> formerLevel;
+    private final Vec3 formerPos;
 
     public TeleportationEvent(
             ServerPlayer sender, ServerPlayer receiver,
             TeleportRequest.TeleportationType tpType,
-            ResourceKey<Level> targetLevel, Vec3 targetPos
+            ResourceKey<Level> formerLevel, Vec3 formerPos
     ) {
         this.sender = sender;
         this.receiver = receiver;
         this.tpType = tpType;
-        this.targetLevel = targetLevel;
-        this.targetPos = targetPos;
+        this.formerLevel = formerLevel;
+        this.formerPos = formerPos;
     }
 
     public ServerPlayer getSender() {
@@ -38,11 +38,11 @@ public class TeleportationEvent extends Event {
         return tpType;
     }
 
-    public ResourceKey<Level> getTargetLevel() {
-        return targetLevel;
+    public ResourceKey<Level> getFormerLevel() {
+        return formerLevel;
     }
 
-    public Vec3 getTargetPos() {
-        return targetPos;
+    public Vec3 getFormerPos() {
+        return formerPos;
     }
 }
